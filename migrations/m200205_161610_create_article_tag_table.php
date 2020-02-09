@@ -3,20 +3,20 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%article_tags}}`.
+ * Handles the creation of table `{{%article_tag}}`.
  * Has foreign keys to the tables:
  *
  * - `{{%article}}`
- * - `{{%tags}}`
+ * - `{{%tag}}`
  */
-class m200205_161610_create_article_tags_table extends Migration
+class m200205_161610_create_article_tag_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%article_tags}}', [
+        $this->createTable('{{%article_tag}}', [
             'id' => $this->primaryKey(),
             'article_id' => $this->integer(),
             'tag_id' => $this->integer(),
@@ -24,15 +24,15 @@ class m200205_161610_create_article_tags_table extends Migration
 
         // creates index for column `article_id`
         $this->createIndex(
-            '{{%idx-article_tags-article_id}}',
-            '{{%article_tags}}',
+            '{{%idx-article_tag-article_id}}',
+            '{{%article_tag}}',
             'article_id'
         );
 
         // add foreign key for table `{{%article}}`
         $this->addForeignKey(
-            '{{%fk-article_tags-article_id}}',
-            '{{%article_tags}}',
+            '{{%fk-article_tag-article_id}}',
+            '{{%article_tag}}',
             'article_id',
             '{{%article}}',
             'id',
@@ -41,17 +41,17 @@ class m200205_161610_create_article_tags_table extends Migration
 
         // creates index for column `tag_id`
         $this->createIndex(
-            '{{%idx-article_tags-tag_id}}',
-            '{{%article_tags}}',
+            '{{%idx-article_tag-tag_id}}',
+            '{{%article_tag}}',
             'tag_id'
         );
 
-        // add foreign key for table `{{%tags}}`
+        // add foreign key for table `{{%tag}}`
         $this->addForeignKey(
-            '{{%fk-article_tags-tag_id}}',
-            '{{%article_tags}}',
+            '{{%fk-article_tag-tag_id}}',
+            '{{%article_tag}}',
             'tag_id',
-            '{{%tags}}',
+            '{{%tag}}',
             'id',
             'CASCADE'
         );
@@ -64,28 +64,28 @@ class m200205_161610_create_article_tags_table extends Migration
     {
         // drops foreign key for table `{{%article}}`
         $this->dropForeignKey(
-            '{{%fk-article_tags-article_id}}',
-            '{{%article_tags}}'
+            '{{%fk-article_tag-article_id}}',
+            '{{%article_tag}}'
         );
 
         // drops index for column `article_id`
         $this->dropIndex(
-            '{{%idx-article_tags-article_id}}',
-            '{{%article_tags}}'
+            '{{%idx-article_tag-article_id}}',
+            '{{%article_tag}}'
         );
 
-        // drops foreign key for table `{{%tags}}`
+        // drops foreign key for table `{{%tag}}`
         $this->dropForeignKey(
-            '{{%fk-article_tags-tag_id}}',
-            '{{%article_tags}}'
+            '{{%fk-article_tag-tag_id}}',
+            '{{%article_tag}}'
         );
 
         // drops index for column `tag_id`
         $this->dropIndex(
-            '{{%idx-article_tags-tag_id}}',
-            '{{%article_tags}}'
+            '{{%idx-article_tag-tag_id}}',
+            '{{%article_tag}}'
         );
 
-        $this->dropTable('{{%article_tags}}');
+        $this->dropTable('{{%article_tag}}');
     }
 }

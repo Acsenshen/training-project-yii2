@@ -6,7 +6,7 @@ use yii\db\Migration;
  * Handles the creation of table `{{%article}}`.
  * Has foreign keys to the tables:
  *
- * - `{{%users}}`
+ * - `{{%user}}`
  * - `{{%category}}`
  */
 class m200205_161032_create_article_table extends Migration
@@ -36,12 +36,12 @@ class m200205_161032_create_article_table extends Migration
             'author'
         );
 
-        // add foreign key for table `{{%users}}`
+        // add foreign key for table `{{%user}}`
         $this->addForeignKey(
             '{{%fk-article-author}}',
             '{{%article}}',
             'author',
-            '{{%users}}',
+            '{{%user}}',
             'id',
             'CASCADE'
         );
@@ -86,7 +86,7 @@ class m200205_161032_create_article_table extends Migration
      */
     public function safeDown()
     {
-        // drops foreign key for table `{{%users}}`
+        // drops foreign key for table `{{%user}}`
         $this->dropForeignKey(
             '{{%fk-article-author}}',
             '{{%article}}'

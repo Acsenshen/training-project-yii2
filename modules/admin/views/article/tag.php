@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;\yii\web\YiiAsset::register($this)
     <?php $form = ActiveForm::begin(); ?>
 
 
-    <?= Html::dropDownList('tags', $selectedTags, $tags, ['class' => 'form-control', 'multiple' => 'true']) ?>
+    <?= Html::dropDownList('tag', $selectedTagId, $tag, ['class' => 'form-control', 'multiple' => 'true']) ?>
     
     <div class="form-group">
         <?= Html::submitButton('Submit', ['class' => 'btn btn-success']) ?>

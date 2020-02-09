@@ -4,13 +4,13 @@ namespace app\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use app\models\ArticleTags;
+use app\models\ArticleTag;
 use yii\data\Pagination;
 
 class Article extends \yii\db\ActiveRecord
 {
-    const STATUS_ALLOW = 1;
-    const STATUS_DISALLOW = 2;
+    const statusAllow = 1;
+    const statusDisallow = 2;
 
     public function rules()
     {
@@ -43,21 +43,21 @@ class Article extends \yii\db\ActiveRecord
     }
 
     // Заносим картинку в базу
-    public function saveImage($nameFile)
+    public function saveImage(String $nameFile):bool
     {
         $this->preview = $nameFile;
         return $this->save();
     }
 
     // Удаляем картинку после удаления записи
-    public function deleteImage()
+    public function deleteImage():bool
     {
         $image = new ImageUpload();
-        $image->deleteOldImage($this->preview);
+        return $image->deleteOldImage($this->preview);
     }
 
     // Получаем текущую картинку стать
-    public function getImage()
+    public function getImage():string
     {
         $image = new ImageUpload();
         $dir = $image->getFolder() . $this->preview;
@@ -69,12 +69,12 @@ class Article extends \yii\db\ActiveRecord
         }
     }
 
-    public static function getAll($pageSize = 3)
+    public static function getAll(int $pageSize = 3):array
     {
-        $query = Article::find(); // Формируем запрос
-        $countQuery = $query->count(); // Берем общее количество статей
-        $pages = new Pagination(['totalCount' => $countQuery, 'pageSize' => $pageSize]);
-        $articles = $query->offset($pages->offset)->limit($pages->limit)->all(); // Лимитируем наш запрос используя пагинацию и выводим все статьи
+        $article = Article::find(); // Формируем запрос
+        $articleCount = $query->count(); // Берем общее количество статей
+        $pages = new Pagination(['totalCount' => $articleCount, 'pageSize' => $pageSize]);
+        $articles = $article->offset($pages->offset)->limit($pages->limit)->all(); // Лимитируем наш запрос используя пагинацию и выводим все статьи
         
         // offset Показывает 3 записи в зависимости от страницы. Если 1 страница, то 1.2.3, но если 2 страница то 2.3.4
         // limit - лимит статей на странице
@@ -86,26 +86,32 @@ class Article extends \yii\db\ActiveRecord
 
 
     // Удаляем картинку после удаления записи (Этот метод вызывается перед удалением записи)
-    public function beforeDelete()
+    public function beforeDelete():bool
     {
         $this->deleteImage(); // Вызов функции
         return parent::beforeDelete();
     }
 
     // Устанавливаем связь между категориями
-    public function getCategory()
+    public function getCategory():object
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
-    // // Текущяя категория
-    public function getSelectedCategory()
+    // Текущяя ID категории
+    public function getSelectedCategoryId():int
     {
         return ($this->category_id) ? $this->category_id : '0';
     }
 
+    // Текущее имя категории
+    public function getCategoryName():string
+    {
+        return $this->category->title;
+    }
+
     // Cохраняем категорию
-    public function saveCategory($newCategory_id)
+    public function saveCategory(int $newCategory_id):bool
     {
         $category = Category::findOne($newCategory_id); // Ищем модель
         if ($category != null) {
@@ -115,92 +121,97 @@ class Article extends \yii\db\ActiveRecord
     }
 
     // Устанавливаем связь между тегами и статьей (получаем все теги со стороны статьи)
-    public function getTags()
+    public function getTag():object
     {
-        return $this->hasMany(Tags::className(), ['id' => 'tag_id'])->viaTable('article_tags', ['article_id' => 'id']);
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->viaTable('article_tag', ['article_id' => 'id']);
     }
 
     // Получаем ID выбранных тегов
-    public function getSelectedTags()
+    public function getSelectedTagId():array
     {
-        $selectedTagsId = $this->getTags()->select('id')->asArray()->all();
-        return ArrayHelper::getColumn($selectedTagsId, 'id');
+        $selectedTagId = $this->getTag()->select('id')->asArray()->all();
+        return ArrayHelper::getColumn($selectedTagId, 'id');
     }
 
     // Получаем имена выбранных тегов
-    public function getNameTags()
+    public function getArticleTag():array
     {
-        $selectedTagsName = $this->getTags()->select('title')->asArray()->all();
-        return ArrayHelper::getColumn($selectedTagsName, 'title');
+        $selectedTagName = $this->getTag()->select('title')->asArray()->all();
+        return ArrayHelper::getColumn($selectedTagName, 'title');
     }
 
     // Сохраняем теги
-    public function SaveTags($newTags_id)
+    public function SaveTag(Array $newTagsId):bool
     {
-        if (is_array($newTags_id)) {
-            $this->deleteOldTags();
-            foreach ($newTags_id as $newTag_id) {
-                $tags = Tags::findOne($newTag_id);
-                $this->link('tags', $tags);
+        if (is_array($newTagsId)) {
+            $this->deleteOldTag();
+            foreach ($newTagsId as $newTagId) {
+                $tag = Tag::findOne($newTagId);
+                $this->link('tag', $tag);
             }
             return true;
         }
     }
 
     // Удаление старых тегов
-    private function deleteOldTags()
+    private function deleteOldTag():bool
     {
-        ArticleTags::deleteAll(['article_id' => $this->id]);
+        return ArticleTag::deleteAll(['article_id' => $this->id]);
     }
 
     // Устанавливаем связь между комментариями
-    public function getComments()
+    public function getComment():object
     {
-        return $this->hasMany(Comments::className(), ['article_id' => 'id']);
+        return $this->hasMany(Comment::className(), ['article_id' => 'id']);
     }
 
     // Получить комментарии
-    public function getArticleComments()
+    public function getArticleComment():array
     {
-        return $this->getComments()->where(['status' => 1])->all();
+        return $this->getComment()->where(['status' => 1])->all();
     }
 
-    public function getUser()
+    public function getUser():object
     {
-        return $this->hasOne(Users::className(), ['id' => 'author']);
+        return $this->hasOne(User::className(), ['id' => 'author']);
     }
 
     // Счетчик просмотров
-    public function viewedCount()
+    public function viewedCount():bool
     {
         $this->viewed += 1;
         return $this->save(false);
     }
 
     // Сохранение статьи
-    public function saveArticle()
+    public function saveArticle():bool
     {
         $this->author = Yii::$app->user->id;
-        $this->status = 2;
+        $this->status = self::statusDisallow;
         return $this->save();
     }
 
     // Одобрена или нет
-    public function isAllowed() {
-        if ($this->status == 1) {
+    public function isAllowed():bool 
+    {
+        if ($this->status == self::statusAllow) {
             return true;
+        } else {
+            return false;
         }
     }
 
     // Одобрена
-    public function allow() {
-        $this->status = self::STATUS_ALLOW;
+    public function allow() :bool
+    {
+        $this->status = self::statusAllow;
         return $this->save(false);
     }
 
     // Не одобрена
-    public function disallow() {
-        $this->status = self::STATUS_DISALLOW;
+    public function disallow():bool
+    {
+        $this->status = self::statusDisallow;
         return $this->save(false);
     }
 }

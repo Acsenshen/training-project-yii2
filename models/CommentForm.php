@@ -4,18 +4,16 @@ namespace app\models;
 
 use Yii;
 
-class CommentsForm extends \yii\db\ActiveRecord
+class CommentForm extends \yii\db\ActiveRecord
 {
     public $comment;
+    const STATUS_DISALLOW = 2;
 
     public static function tableName()
     {
         return 'comment';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
@@ -24,14 +22,14 @@ class CommentsForm extends \yii\db\ActiveRecord
         ];
     }
 
-    public function saveComment($article_id)
+    public function saveComment(int $article_id):bool
     {
-        $comment = new Comments();
+        $comment = new Comment();
         $comment->text = $this->comment;
         $comment->author_comment = Yii::$app->user->id;
         $comment->article_id = $article_id;
         $comment->comment_date = date("Y-m-d");
-        $comment->status = 2;
+        $comment->status = self::STATUS_DISALLOW;
         return $comment->save();
     }
 }

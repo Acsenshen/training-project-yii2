@@ -17,13 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <p class="h4 mb-4">Регистрация</p>
     <div class="form-row mb-4">
         <div class="col">
-            <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+            <?= $form->field($signupForm, 'email')->textInput(['autofocus' => true]) ?>
         </div>
         <div class="col">
-            <?= $form->field($model, 'password')->passwordInput() ?>
+            <?= $form->field($signupForm, 'password')->passwordInput() ?>
         </div>
     </div>
-    <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
+    <?= $form->field($signupForm, 'name')->textInput(['autofocus' => true]) ?>
 
 
     <?= Html::submitButton('Вперед', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>

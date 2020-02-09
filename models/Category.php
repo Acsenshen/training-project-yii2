@@ -2,30 +2,17 @@
 
 namespace app\models;
 
-use Yii;
 use yii\helpers\ArrayHelper;
 
-/**
- * This is the model class for table "category".
- *
- * @property int $id
- * @property string|null $title
- *
- * @property Article[] $articles
- */
 class Category extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public static function tableName()
     {
         return 'category';
     }
 
-    /**
-     * {@inheritdoc}
-     */
+
     public function rules()
     {
         return [
@@ -33,9 +20,7 @@ class Category extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+
     public function attributeLabels()
     {
         return [
@@ -44,14 +29,15 @@ class Category extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getArticles()
+    public function getArticles():object
     {
         return $this->hasMany(Article::className(), ['category_id' => 'id']);
     }
 
     
     // Список всех категорий
-    public static function allCategory() {
+    public static function allCategory():array 
+    {
         return ArrayHelper::map(Category::find()->all(), 'id', 'title');
     }
 }

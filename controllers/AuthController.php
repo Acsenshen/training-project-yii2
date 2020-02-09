@@ -2,12 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\Article;
-use app\models\Users;
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\SignupForm;
 
@@ -19,13 +15,13 @@ class AuthController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        $loginForm = new LoginForm();
+        if ($loginForm->load(Yii::$app->request->post()) && $loginForm->login()) {
             return $this->goBack();
         }
 
-        $model->password = '';
-        return $this->render('login', ['model' => $model]);
+        $loginForm->password = '';
+        return $this->render('login', ['loginForm' => $loginForm]);
     }
 
     public function actionLogout()
@@ -37,12 +33,12 @@ class AuthController extends Controller
 
     public function actionSignup()
     {
-        $model = new SignupForm();
+        $signupForm = new SignupForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->saveNewUser()) {
+        if ($signupForm->load(Yii::$app->request->post()) && $signupForm->saveNewUser()) {
             return $this->redirect(['auth/login']); 
         }
 
-        return $this->render('signup', ['model' => $model]);
+        return $this->render('signup', ['signupForm' => $signupForm]);
     }
 }

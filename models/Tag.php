@@ -2,15 +2,15 @@
 
 namespace app\models;
 
-use Yii;
+use yii\helpers\ArrayHelper;
 
 
-class Status extends \yii\db\ActiveRecord
+class Tag extends \yii\db\ActiveRecord
 {
 
     public static function tableName()
     {
-        return 'status';
+        return 'tag';
     }
 
 
@@ -30,15 +30,13 @@ class Status extends \yii\db\ActiveRecord
         ];
     }
 
-
     public function getArticles():object
     {
-        return $this->hasMany(Article::className(), ['status' => 'id']);
+        return $this->hasMany(Article::className(), ['id' => 'article_id'])->viaTable('article_tag', ['tag_id' => 'id']);
     }
 
-
-    public function getComments():object
+    public static function allTag():array
     {
-        return $this->hasMany(Comment::className(), ['status' => 'id']);
+        return ArrayHelper::map(Tag::find()->all(), 'id', 'title');
     }
 }

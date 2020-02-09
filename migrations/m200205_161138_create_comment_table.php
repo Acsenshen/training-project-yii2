@@ -3,21 +3,21 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%comments}}`.
+ * Handles the creation of table `{{%comment}}`.
  * Has foreign keys to the tables:
  *
- * - `{{%users}}`
+ * - `{{%user}}`
  * - `{{%article}}`
  * - `{{%status}}`
  */
-class m200205_161138_create_comments_table extends Migration
+class m200205_161138_create_comment_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%comments}}', [
+        $this->createTable('{{%comment}}', [
             'id' => $this->primaryKey(),
             'text' => $this->string(),
             'author_comment' => $this->integer(),
@@ -28,32 +28,32 @@ class m200205_161138_create_comments_table extends Migration
 
         // creates index for column `author_comment`
         $this->createIndex(
-            '{{%idx-comments-author_comment}}',
-            '{{%comments}}',
+            '{{%idx-comment-author_comment}}',
+            '{{%comment}}',
             'author_comment'
         );
 
-        // add foreign key for table `{{%users}}`
+        // add foreign key for table `{{%user}}`
         $this->addForeignKey(
-            '{{%fk-comments-author_comment}}',
-            '{{%comments}}',
+            '{{%fk-comment-author_comment}}',
+            '{{%comment}}',
             'author_comment',
-            '{{%users}}',
+            '{{%user}}',
             'id',
             'CASCADE'
         );
 
         // creates index for column `article_id`
         $this->createIndex(
-            '{{%idx-comments-article_id}}',
-            '{{%comments}}',
+            '{{%idx-comment-article_id}}',
+            '{{%comment}}',
             'article_id'
         );
 
         // add foreign key for table `{{%article}}`
         $this->addForeignKey(
-            '{{%fk-comments-article_id}}',
-            '{{%comments}}',
+            '{{%fk-comment-article_id}}',
+            '{{%comment}}',
             'article_id',
             '{{%article}}',
             'id',
@@ -62,15 +62,15 @@ class m200205_161138_create_comments_table extends Migration
 
         // creates index for column `status`
         $this->createIndex(
-            '{{%idx-comments-status}}',
-            '{{%comments}}',
+            '{{%idx-comment-status}}',
+            '{{%comment}}',
             'status'
         );
 
         // add foreign key for table `{{%status}}`
         $this->addForeignKey(
-            '{{%fk-comments-status}}',
-            '{{%comments}}',
+            '{{%fk-comment-status}}',
+            '{{%comment}}',
             'status',
             '{{%status}}',
             'id',
@@ -83,42 +83,42 @@ class m200205_161138_create_comments_table extends Migration
      */
     public function safeDown()
     {
-        // drops foreign key for table `{{%users}}`
+        // drops foreign key for table `{{%user}}`
         $this->dropForeignKey(
-            '{{%fk-comments-author_comment}}',
-            '{{%comments}}'
+            '{{%fk-comment-author_comment}}',
+            '{{%comment}}'
         );
 
         // drops index for column `author_comment`
         $this->dropIndex(
-            '{{%idx-comments-author_comment}}',
-            '{{%comments}}'
+            '{{%idx-comment-author_comment}}',
+            '{{%comment}}'
         );
 
         // drops foreign key for table `{{%article}}`
         $this->dropForeignKey(
-            '{{%fk-comments-article_id}}',
-            '{{%comments}}'
+            '{{%fk-comment-article_id}}',
+            '{{%comment}}'
         );
 
         // drops index for column `article_id`
         $this->dropIndex(
-            '{{%idx-comments-article_id}}',
-            '{{%comments}}'
+            '{{%idx-comment-article_id}}',
+            '{{%comment}}'
         );
 
         // drops foreign key for table `{{%status}}`
         $this->dropForeignKey(
-            '{{%fk-comments-status}}',
-            '{{%comments}}'
+            '{{%fk-comment-status}}',
+            '{{%comment}}'
         );
 
         // drops index for column `status`
         $this->dropIndex(
-            '{{%idx-comments-status}}',
-            '{{%comments}}'
+            '{{%idx-comment-status}}',
+            '{{%comment}}'
         );
 
-        $this->dropTable('{{%comments}}');
+        $this->dropTable('{{%comment}}');
     }
 }

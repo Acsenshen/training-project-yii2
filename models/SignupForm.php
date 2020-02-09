@@ -4,7 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use app\models\Users;
+use app\models\User;
 
 class SignupForm extends Model
 {
@@ -12,27 +12,21 @@ class SignupForm extends Model
     public $password;
     public $name;
 
-    private $_user = false;
-
-
-    /**
-     * @return array the validation rules.
-     */
     public function rules()
     {
         return [
             [['email', 'password', 'name'], 'required'],
             [['email'], 'email'],
-            [['email'], 'unique', 'targetClass' => 'app\models\Users', 'targetAttribute' => 'email'],
+            [['email'], 'unique', 'targetClass' => 'app\models\User', 'targetAttribute' => 'email'],
             [['name'], 'string'],
             ['password', 'string'],
         ];
     }
 
-    public function saveNewUser()
+    public function saveNewUser():bool
     {
         if ($this->validate()) {
-            $user = new Users();
+            $user = new User();
         
             $data = [
             "email" => $this->email,
@@ -45,7 +39,7 @@ class SignupForm extends Model
         }
     }
 
-    private function hashPassword($password)
+    private function hashPassword(string $password):string
     {
         $hash = Yii::$app->getSecurity()->generatePasswordHash($password);
         return $hash;

@@ -26,11 +26,13 @@ class ImageUpload extends Model
         if ($this->validate() && $this->checkFolder()) {
             $this->deleteOldImage($oldNameFile);
             return $this->saveImage();
+        } else {
+            return false;
         }
     }
 
     // Путь до папки
-    public function getFolder()
+    public function getFolder():string
     {
         return Yii::getAlias('@web') . 'uploads/';
     }
@@ -42,9 +44,9 @@ class ImageUpload extends Model
         $folder = $this->getFolder();
 
         if (!file_exists($folder)) {
-            return mkdir($folder, 0777, true);
+            return (string) mkdir($folder, 0777, true);
         } else {
-            return true;
+            return (bool) true;
         }
     }
 
@@ -57,21 +59,24 @@ class ImageUpload extends Model
     }
 
     // Генерация уникального названия
-    private function generateFileName()
+    private function generateFileName():string
     {
         return strtolower(md5(uniqid($this->image->baseName)) . '.' . $this->image->extension);
     }
 
     // Удаление старой картинки
-    public function deleteOldImage($oldNameFile)
+    public function deleteOldImage($oldNameFile):bool
     {
         if ($this->fileExist($oldNameFile)) {
-            unlink($this->getFolder() . $oldNameFile); // Удаляем старую картинку
+           unlink($this->getFolder() . $oldNameFile); // Удаляем старую картинку
+           return true;
+        } else {
+            return false;
         }
     }
 
     // Функция сохрания
-    private function saveImage()
+    private function saveImage():string
     {
         $newfileName = $this->generateFileName();
         $this->image->saveAs($this->getFolder() . $newfileName);

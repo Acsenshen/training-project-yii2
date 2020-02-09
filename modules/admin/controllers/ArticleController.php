@@ -10,13 +10,11 @@ use yii\filters\VerbFilter;
 use app\models\ImageUpload;
 use yii\web\UploadedFile;
 use app\models\Category;
-use app\models\Tags;
+use app\models\Tag;
 
 class ArticleController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public function behaviors()
     {
         return [
@@ -32,99 +30,98 @@ class ArticleController extends Controller
 
     public function actionIndex()
     {
-        $model = Article::find()->all();
-        return $this->render('index', ['articles' => $model]);
+        $articleList = Article::find()->all();
+        return $this->render('index', ['articles' => $articleList]);
     }
 
 
-    public function actionView($id)
+    public function actionView(int $id)
     {
-        $model = $this->findModel($id);
-        return $this->render('view', ['model' => $model]);
+        $article = $this->findModel($id);
+        return $this->render('view', ['article' => $article]);
     }
 
 
     public function actionCreate()
     {
-        $model = new Article();
-        if ($model->load(Yii::$app->request->post()) && $model->saveArticle()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $article = new Article();
+
+        if ($article->load(Yii::$app->request->post()) && $article->saveArticle()) {
+            return $this->redirect(['view', 'id' => $article->id]);
         } else {
-            return $this->render('create', ['model' => $model]);
+            return $this->render('create', ['article' => $article]);
         }
     }
 
-    public function actionUpdate($id)
+    public function actionUpdate(int $id)
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $article = $this->findModel($id);
+        if ($article->load(Yii::$app->request->post()) && $article->save()) {
+            return $this->redirect(['view', 'id' => $article->id]);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'article' => $article,
         ]);
     }
 
-    public function actionDelete($id)
+    public function actionDelete(int $id)
     {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
 
-    public function actionSetImage($id)
+    public function actionSetImage(int $id)
     {
-        $model = new ImageUpload();
+        $image = new ImageUpload();
 
         if (Yii::$app->request->isPost) {
             $article = $this->findModel($id); // Получаем данные текущего article
-            $file = UploadedFile::getInstance($model, 'image'); // Экземпляр текущего файла
-            $nameFile = $model->upload($file, $article->preview);
+            $file = UploadedFile::getInstance($image, 'image'); // Экземпляр текущего файла
+            $nameFile = $image->upload($file, $article->preview);
             
             if ($article->saveImage($nameFile)) {
                 return $this->redirect(['view', 'id' => $article->id]);
             }
         }
 
-        return $this->render('image', ['model' => $model]);
+        return $this->render('image', ['image' => $image]);
     }
 
-    public function actionSetCategory($id)
+    public function actionSetCategory(int $id)
     {
-        $model = $this->findModel($id);
-        $selectedCategory = $model->selectedCategory;
+        $article = $this->findModel($id);
+        $selectedCategoryId = $article->selectedCategoryId;
         $category = Category::allCategory();
 
         if (Yii::$app->request->isPost) {
             $category = Yii::$app->request->post('category'); // Получаем id категории из POST
-            if ($model->saveCategory($category)) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($article->saveCategory($category)) {
+                return $this->redirect(['view', 'id' => $article->id]);
             };
         }
 
-        return $this->render('category', ['category' => $category, 'selectedCategory' => $selectedCategory]);
+        return $this->render('category', ['category' => $category, 'selectedCategoryId' => $selectedCategoryId]);
     }
 
-    public function actionSetTags($id)
+    public function actionSetTag(int $id)
     {
         $article = $this->findModel($id);
-        $selectedTags = $article->selectedTags;
-        $tags = Tags::allTags();
+        $selectedTagId = $article->selectedTagId;
+        $tag = Tag::allTag();
 
         if (Yii::$app->request->isPost) {
-            $tags = Yii::$app->request->post('tags');
-  
-            if ($article->saveTags($tags)) {
+            $tag = Yii::$app->request->post('tag');
+            if ($article->saveTag($tag)) {
                 return $this->redirect(['view', 'id' => $article->id]);
             }
         }
 
-        return $this->render('tags', ['tags' => $tags, 'selectedTags' => $selectedTags]);
+        return $this->render('tag', ['tag' => $tag, 'selectedTagId' => $selectedTagId]);
     }
 
-    public function actionAllow($id)
+    public function actionAllow(int $id)
     {
         $article = Article::findOne($id);
         if ($article->allow()) {
@@ -132,7 +129,7 @@ class ArticleController extends Controller
         }
     }
 
-    public function actionDisallow($id)
+    public function actionDisallow(int $id)
     {
         $article = Article::findOne($id);
         if ($article->disallow()) {
@@ -141,7 +138,7 @@ class ArticleController extends Controller
     }
 
 
-    protected function findModel($id)
+    protected function findModel(int $id)
     {
         if (($model = Article::findOne($id)) !== null) {
             return $model;

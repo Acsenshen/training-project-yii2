@@ -47,7 +47,7 @@ MyAsset::register($this);
               </a>
             </li>
             <li class="nav-item">
-              <a href="/admin/users" class="nav-link list-group-item list-group-item-action waves-effect">
+              <a href="/admin/user" class="nav-link list-group-item list-group-item-action waves-effect">
                 <i class="fas fa-users ml-3 mr-3"></i>Пользователи
               </a>
             </li>
@@ -57,7 +57,7 @@ MyAsset::register($this);
               </a>
             </li>
             <li class="nav-item">
-              <a href="/admin/comments" class="nav-link list-group-item list-group-item-action waves-effect">
+              <a href="/admin/comment" class="nav-link list-group-item list-group-item-action waves-effect">
                 <i class="fas fa-user ml-3 mr-3"></i>Комментарии
               </a>
             </li>
@@ -67,7 +67,7 @@ MyAsset::register($this);
               </a>
             </li>
             <li class="nav-item">
-              <a href="/admin/tags" class="nav-link list-group-item list-group-item-action waves-effect">
+              <a href="/admin/tag" class="nav-link list-group-item list-group-item-action waves-effect">
                 <i class="fas fa-tags ml-3 mr-3"></i>Теги
               </a>
             </li>

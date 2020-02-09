@@ -3,8 +3,8 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use app\models\Tags;
-use app\models\TagsSearch;
+use app\models\Tag;
+use app\models\TagSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * TagsController implements the CRUD actions for Tags model.
  */
-class TagsController extends Controller
+class TagController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -35,7 +35,7 @@ class TagsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TagsSearch();
+        $searchModel = new TagSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -44,12 +44,7 @@ class TagsController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Tags model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     public function actionView($id)
     {
         return $this->render('view', [
@@ -57,14 +52,10 @@ class TagsController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new Tags model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
+
     public function actionCreate()
     {
-        $model = new Tags();
+        $model = new Tag();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -75,13 +66,7 @@ class TagsController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing Tags model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -95,13 +80,7 @@ class TagsController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing Tags model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
@@ -109,16 +88,10 @@ class TagsController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the Tags model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Tags the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
+
     protected function findModel($id)
     {
-        if (($model = Tags::findOne($id)) !== null) {
+        if (($model = Tag::findOne($id)) !== null) {
             return $model;
         }
 

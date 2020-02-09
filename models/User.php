@@ -4,12 +4,14 @@ namespace app\models;
 
 use Yii;
 
-class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
 
+    const roleAdmin = 1;
+    
     public static function tableName()
     {
-        return 'users';
+        return 'user';
     }
 
     public function rules()
@@ -31,7 +33,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
-    public static function findIdentity($id)
+    public static function findIdentity($id):object
     {
         return static::findOne($id);
     }
@@ -42,7 +44,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
 
-    public function getId()
+    public function getId():int
     {
         return $this->id;
     }
@@ -56,16 +58,16 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     public function validateAuthKey($authKey)
     {
-        return $this->getAuthKey() === $authKey;
+        
     }
 
 
     public static function findByEmail($email)
     {
-        return Users::find()->where(['email' => $email])->one();
+        return User::find()->where(['email' => $email])->one();
     }
 
-    public function validatePassword($password)
+    public function validatePassword(string $password):bool
     {
         if (Yii::$app->getSecurity()->validatePassword($password, $this->password)) {
             return true;
@@ -75,7 +77,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     }
 
     public function create() {
-        $this->isAdmin = 1;
+        $this->isAdmin = self::roleAdmin;
         return $this->save(false);
     }
 }

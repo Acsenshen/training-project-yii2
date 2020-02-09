@@ -4,16 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Tags;
+use app\models\Tag;
 
-/**
- * TagsSearch represents the model behind the search form of `app\models\Tags`.
- */
-class TagsSearch extends Tags
+
+class TagSearch extends Tag
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public function rules()
     {
         return [
@@ -22,27 +18,18 @@ class TagsSearch extends Tags
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+
     public function scenarios()
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
+
     public function search($params)
     {
-        $query = Tags::find();
+        $query = Tag::find();
 
-        // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -51,8 +38,6 @@ class TagsSearch extends Tags
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 

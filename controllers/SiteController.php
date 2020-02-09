@@ -7,14 +7,11 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\CommentsForm;
+use app\models\CommentForm;
 
 class SiteController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public function behaviors()
     {
         return [
@@ -53,59 +50,34 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $data = Article::getAll(5);
-        return $this->render('index', ['articles' => $data['articles'], 'pages' => $data['pages'],
+        $articleList = Article::getAll(5);
+        return $this->render('index', ['articles' => $articleList['articles'], 'pages' => $articleList['pages'],
        ]);
     }
 
     public function actionView($id)
     {
         $article = Article::findOne($id);
-        $category = $article->category->title;
-        $commentForm = new CommentsForm();
-        $comments = $article->getArticleComments();
-        $lastpost =  Article::find()->orderBy('id desc')->limit(3)->all();
-        $tags = $article->getNameTags();
+        $categoryName = $article->categoryName;
+        $commentForm = new CommentForm();
+        $commentList = $article->getArticleComment();
+        $lastArticles = Article::find()->orderBy('id desc')->limit(3)->all();
+        $tagList = $article->articleTag;
         $article->viewedCount();
-        return $this->render('view', ['article' => $article, 'category' => $category, 'tags' => $tags, 'comments' => $comments, 'commentForm' => $commentForm, 'lastpost' => $lastpost]);
+        return $this->render('view', ['article' => $article, 'categoryName' => $categoryName, 'tags' => $tagList, 'comments' => $commentList, 'commentForm' => $commentForm, 'lastArticles' => $lastArticles]);
     }
 
 
     public function actionComment($id)
     {
-        $model = new CommentsForm();
+        $commentForm = new CommentForm();
 
         if (Yii::$app->request->isPost) {
-            $model->load(Yii::$app->request->post());
-            if ($model->saveComment($id)) {
+            $commentForm->load(Yii::$app->request->post());
+            if ($commentForm->saveComment($id)) {
                 Yii::$app->getSession()->setFlash('comment', 'Ваш комментарий был добавлен. Ожидайте подтверждения');
                 return $this->redirect(['/site/view', 'id' => $id]);
             }
         }
-    }
-
-
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
-    }
-
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
     }
 }

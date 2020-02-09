@@ -36,7 +36,7 @@ $this->title = 'Все новости';?>
                 <div class="card mb-4 wow fadeIn">
                     <div class="card-body">
                         <p>Категория:</p>
-                        <p><?= $category; ?></p>
+                        <p><?= $categoryName; ?></p>
                         <p>Теги:</p>
                         <p>
                             <?php $fields = '';
@@ -83,8 +83,8 @@ $this->title = 'Все новости';?>
             </div>
 
             <!--Последние статьи -->
-            <?= $this->render('/partials/lastpost', [
-                'lastpost' => $lastpost,
+            <?= $this->render('/partials/lastArticles', [
+                'lastArticles' => $lastArticles,
                 ]) ?>
 
         </div>
