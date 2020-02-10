@@ -13,6 +13,23 @@ $this->params['breadcrumbs'][] = $this->title;\yii\web\YiiAsset::register($this)
 
     <h1 class="pb-4"><?= Html::encode($this->title) ?></h1>
 
+
+    <?= GridView::widget([
+        'dataProvider' => $provider,
+
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            'id',
+            'title',
+
+            ['class' => 'yii\grid\ActionColumn'],
+        ],
+    ]); ?>
+
+
+
+
 <!-- Editable table -->
 <div class="card">
   <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Все новости</h3>

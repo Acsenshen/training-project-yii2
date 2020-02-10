@@ -72,7 +72,7 @@ class Article extends \yii\db\ActiveRecord
     public static function getAll(int $pageSize = 3):array
     {
         $article = Article::find(); // Формируем запрос
-        $articleCount = $query->count(); // Берем общее количество статей
+        $articleCount = $article->count(); // Берем общее количество статей
         $pages = new Pagination(['totalCount' => $articleCount, 'pageSize' => $pageSize]);
         $articles = $article->offset($pages->offset)->limit($pages->limit)->all(); // Лимитируем наш запрос используя пагинацию и выводим все статьи
         

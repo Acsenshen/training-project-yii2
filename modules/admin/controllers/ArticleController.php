@@ -11,6 +11,7 @@ use app\models\ImageUpload;
 use yii\web\UploadedFile;
 use app\models\Category;
 use app\models\Tag;
+use yii\data\ActiveDataProvider;
 
 class ArticleController extends Controller
 {
@@ -30,8 +31,20 @@ class ArticleController extends Controller
 
     public function actionIndex()
     {
-        $articleList = Article::find()->all();
-        return $this->render('index', ['articles' => $articleList]);
+        $query = Article::find();
+
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 3,
+            ],
+        ]);
+
+        
+        $articleList = $provider->getModels();
+
+
+        return $this->render('index', ['articles' => $articleList, 'provider' => $provider]);
     }
 
 

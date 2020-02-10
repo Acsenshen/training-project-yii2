@@ -4,7 +4,9 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
 use app\models\LoginForm;
+use yii\bootstrap\ActiveForm;
 use app\models\SignupForm;
 
 class AuthController extends Controller
@@ -34,6 +36,11 @@ class AuthController extends Controller
     public function actionSignup()
     {
         $signupForm = new SignupForm();
+     
+        if (Yii::$app->request->isAjax && $signupForm->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($signupForm);
+        }
 
         if ($signupForm->load(Yii::$app->request->post()) && $signupForm->saveNewUser()) {
             return $this->redirect(['auth/login']); 
