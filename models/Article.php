@@ -38,7 +38,7 @@ class Article extends \yii\db\ActiveRecord
             'viewed' => 'Viewed',
             'author' => 'Author',
             'status' => 'Status',
-            'category_id' => 'Category ID',
+            'category_id' => 'Category ID'
         ];
     }
 
@@ -105,7 +105,7 @@ class Article extends \yii\db\ActiveRecord
     }
 
     // Текущее имя категории
-    public function getCategoryName():string
+    public function getCategoryName()
     {
         return $this->category->title;
     }
@@ -171,6 +171,12 @@ class Article extends \yii\db\ActiveRecord
         return $this->getComment()->where(['status' => 1])->all();
     }
 
+    public function getAuthorName():string
+    {
+        return $this->user->name;
+    }
+
+    // Устанавливаем связь с user
     public function getUser():object
     {
         return $this->hasOne(User::className(), ['id' => 'author']);

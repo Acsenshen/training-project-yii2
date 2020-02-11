@@ -12,6 +12,7 @@ use yii\web\UploadedFile;
 use app\models\Category;
 use app\models\Tag;
 use yii\data\ActiveDataProvider;
+use app\models\ArticleSearch;
 
 class ArticleController extends Controller
 {
@@ -31,20 +32,13 @@ class ArticleController extends Controller
 
     public function actionIndex()
     {
-        $query = Article::find();
+        $searchModel = new ArticleSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $provider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 3,
-            ],
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
-
-        
-        $articleList = $provider->getModels();
-
-
-        return $this->render('index', ['articles' => $articleList, 'provider' => $provider]);
     }
 
 
